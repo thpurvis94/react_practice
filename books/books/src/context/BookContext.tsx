@@ -1,37 +1,31 @@
 import axios from "axios"
-import React, { createContext, useContext, useEffect, useState } from "react"
+import { createContext, FC, ReactNode, useState } from "react"
 import { Book } from "../App"
 
-type BookContextProviderProps = {
-    children: React.ReactNode
+export type BookContextState = {
+    books: Book[]
+    createBook: (title: string) => Promise<void>
+    readBooks: () => Promise<void>
+    editBook: (book: Book) => Promise<void>
+    deleteBook: (book: Book) => Promise<void>
 }
 
-export type BookContextType = {
-    books: Book[],
-    createBook(title: string): Promise<void>,
-    fetchBooks(): Promise<void>,
-    editBookById(id: number, title: string): Promise<void>,
-    deleteBookById(id: number): Promise<void>
-}
-
-const defaultValues: BookContextType = {
+const defaultValues: BookContextState = {
     books: [],
-    createBook: async (title: string): Promise<void> => {},
-    fetchBooks: async (): Promise<void> => {},
-    editBookById: async (id: number, title: string): Promise<void> => {},
-    deleteBookById: async (id: number): Promise<void> => {}
+    createBook: async (title: string) => {},
+    readBooks: async () => {},
+    editBook: async (book: Book) => {},
+    deleteBook: async (book: Book) => {}
 }
 
-export const BookContext = createContext<BookContextType>(defaultValues)
+export const BookContext = createContext<BookContextState>(defaultValues)
 
-export const BookContextProvider = ({children}: BookContextProviderProps) =>{
+type Props = {
+    children?: ReactNode
+}
 
-    const [books, setBooks] = useState<Book[]>([])
-
-    const fetchBooks = async (): Promise<void> => {
-        const response = await axios.get('http://localhost:3001/books')
-        setBooks(response.data)
-    }
+const BookProvider: FC<Props> = ({children}) => {
+    const [books, setBooks] = useState<Book[]>(defaultValues.books)
 
     const createBook = async (title: string): Promise<void> => {
         const response = await axios.post('http://localhost:3001/books', {
@@ -44,12 +38,17 @@ export const BookContextProvider = ({children}: BookContextProviderProps) =>{
         ]
         setBooks(updatedBooks)
     }
+
+    const readBooks = async (): Promise<void> => {
+        const response = await axios.get('http://localhost:3001/books')
+        setBooks(response.data)
+    }
     
-    const editBookById = async (id: number, title: string): Promise<void> => {
-        const response = await axios.put(`http://localhost:3001/books/${id}`, {"title": title})
+    const editBook = async (book: Book): Promise<void> => {
+        const response = await axios.put(`http://localhost:3001/books/${book.id}`, {"title": book.title})
 
         const updatedBooks: Book[] = books.map((x: Book) => {
-            if(x.id === id){
+            if(x.id === book.id){
                 return response.data
             }
             return x;
@@ -57,21 +56,22 @@ export const BookContextProvider = ({children}: BookContextProviderProps) =>{
         setBooks(updatedBooks)
     }
     
-    const deleteBookById = async (id: number): Promise<void> => {
-        const updatedBooks = books.filter(x => x.id !== id)
-        await axios.delete(`http://localhost:3001/books/${id}`)
+    const deleteBook = async (book: Book): Promise<void> => {
+        const updatedBooks = books.filter(x => x.id !== book.id)
+        await axios.delete(`http://localhost:3001/books/${book.id}`)
         setBooks(updatedBooks)
     }
 
     return (
         <BookContext.Provider value={{
-            books: books,
-            createBook: createBook,
-            fetchBooks: fetchBooks,
-            editBookById: editBookById,
-            deleteBookById: deleteBookById
+            books,
+            createBook,
+            readBooks,
+            editBook,
+            deleteBook
         }}>
             {children}
         </BookContext.Provider>
     )
 }
+export default BookProvider

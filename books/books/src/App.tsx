@@ -1,8 +1,8 @@
-import React, { ReactElement, useContext, useEffect } from 'react'
+import React, { ReactElement, useContext, useEffect, useState } from 'react'
 import BookCreate from './components/BookCreate'
 import BookList from './components/BookList'
 import './App.css'
-import { BookContext, BookContextType } from './context/BookContext';
+import BookProvider, {BookContext} from "./context/BookContext"
 
 export class Book {
   id: number;
@@ -15,26 +15,20 @@ export class Book {
 }
 
 const App: React.FC = (): ReactElement => {
-
-  const context = useContext(BookContext) as BookContextType
+  const [books, setBooks] = useState<Book[]>([])
+  const { readBooks } = useContext(BookContext)
 
   useEffect(() => {
-    context.fetchBooks()
+    readBooks()
   }, [])
 
   return (
     <div className='app'>
       <h1>Reading List</h1>
-      <BookContext.Provider value={{
-        books: context.books,
-        createBook: context.createBook,
-        fetchBooks: context.fetchBooks,
-        editBookById: context.editBookById,
-        deleteBookById: context.deleteBookById
-      }}>
+      <BookProvider>
         <BookList />
         <BookCreate />
-      </BookContext.Provider>
+      </BookProvider>
     </div>
   )
 }
