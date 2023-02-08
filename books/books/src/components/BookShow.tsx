@@ -1,7 +1,7 @@
 import { ReactElement, useContext, useState } from "react";
 import BookEdit from "./BookEdit"
 import { Book } from "../App"
-import { BookContext, BookContextType } from "../context/BookContext";
+import { BookContext } from "../context/BookContext";
 
 interface Props {
     book: Book
@@ -10,10 +10,10 @@ interface Props {
 const BookShow: React.FC<Props> = (props: Props): ReactElement => {
 
     const [editMode, setEditMode] = useState<boolean>(false)
-    const context = useContext(BookContext) as BookContextType
+    const {deleteBook} = useContext(BookContext)
 
     const handleClick = async (): Promise<void> => {
-        await context.deleteBookById(props.book.id)
+        await deleteBook(props.book)
     }
 
     const handleSubmit = (): void => {

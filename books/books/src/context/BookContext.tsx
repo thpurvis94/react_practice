@@ -51,7 +51,7 @@ const BookProvider: FC<Props> = ({children}) => {
             if(x.id === book.id){
                 return response.data
             }
-            return x;
+            return x
         })
         setBooks(updatedBooks)
     }
