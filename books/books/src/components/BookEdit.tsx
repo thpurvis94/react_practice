@@ -1,6 +1,6 @@
-import { ChangeEvent, FormEvent, ReactElement, useContext, useState } from "react";
+import { ChangeEvent, FormEvent, ReactElement, useState } from "react";
 import { Book } from "../App";
-import { BookContext} from "../context/BookContext";
+import useBookContext from "../hooks/useBookContext";
 
 interface Props {
     book: Book,
@@ -10,7 +10,7 @@ interface Props {
 const BookEdit: React.FC<Props> = (props: Props): ReactElement => {
 
     const [title, setTitle] = useState<string>(props.book.title)
-    const {editBook} = useContext(BookContext)
+    const context = useBookContext()
 
     const handleChange = (event: ChangeEvent<HTMLInputElement>): void => {
         setTitle(event.target.value)
@@ -20,7 +20,7 @@ const BookEdit: React.FC<Props> = (props: Props): ReactElement => {
         event.preventDefault()
         props.handleSubmit()
         props.book.title = title
-        await editBook(props.book)
+        await context.editBook(props.book)
     }
     
     return (

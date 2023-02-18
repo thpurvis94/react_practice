@@ -1,16 +1,15 @@
-import React, { ReactElement, useContext } from "react"
+import React, { ReactElement } from "react"
 import BookShow from "./BookShow"
 import { Book } from "../App"
-import {BookContext} from "../context/BookContext"
+import useBookContext from "../hooks/useBookContext"
 
 const BookList: React.FC = (): ReactElement => {
 
-    const {books} = useContext(BookContext)
+    const context = useBookContext()
 
     const renderedBooks = (): JSX.Element[] => {
-        return books.map((x: Book) => {
-            return <BookShow key={x.id}
-                book={x}/>
+        return context.books.map((x: Book) => {
+            return <BookShow key={x.id} book={x}/>
         })
     }
 

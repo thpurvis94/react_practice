@@ -1,6 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import App, { Book } from './App'
+import App from './App'
 import BookProvider from './context/BookContext'
 import './index.css'
 

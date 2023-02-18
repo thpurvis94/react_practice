@@ -1,10 +1,10 @@
-import React, { ChangeEvent, FormEvent, ReactElement, useContext, useState } from "react";
-import { BookContext, BookContextType } from "../context/BookContext";
+import React, { ChangeEvent, FormEvent, ReactElement, useState } from "react";
+import useBookContext from "../hooks/useBookContext";
 
 const BookCreate: React.FC = (): ReactElement => {
 
     const [title, setTitle] = useState<string>('')
-    const context = useContext(BookContext) as BookContextType
+    const context = useBookContext()
 
     const handleChange = (event: ChangeEvent<HTMLInputElement>): void => {
         setTitle(event.target.value)

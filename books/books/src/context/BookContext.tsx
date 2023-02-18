@@ -1,5 +1,5 @@
 import axios from "axios"
-import { createContext, FC, ReactNode, useState } from "react"
+import { createContext, FC, ReactNode, useCallback, useEffect, useState } from "react"
 import { Book } from "../App"
 
 export type BookContextState = {
@@ -21,11 +21,15 @@ const defaultValues: BookContextState = {
 export const BookContext = createContext<BookContextState>(defaultValues)
 
 type Props = {
-    children?: ReactNode
+    children: ReactNode
 }
 
 const BookProvider: FC<Props> = ({children}) => {
     const [books, setBooks] = useState<Book[]>(defaultValues.books)
+
+    useEffect(() => {
+        readBooks()
+    }, [])
 
     const createBook = async (title: string): Promise<void> => {
         const response = await axios.post('http://localhost:3001/books', {

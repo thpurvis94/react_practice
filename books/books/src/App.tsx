@@ -1,8 +1,7 @@
-import React, { ReactElement, useContext, useEffect, useState } from 'react'
+import React, { ReactElement } from 'react'
 import BookCreate from './components/BookCreate'
 import BookList from './components/BookList'
 import './App.css'
-import {BookContext} from "./context/BookContext"
 
 export class Book {
   id: number;
@@ -15,11 +14,6 @@ export class Book {
 }
 
 const App: React.FC = (): ReactElement => {
-  const { readBooks } = useContext(BookContext)
-
-  useEffect(() => {
-    readBooks()
-  }, [])
 
   return (
     <div className='app'>
