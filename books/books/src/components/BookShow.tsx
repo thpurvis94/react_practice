@@ -33,7 +33,6 @@ const BookShow: React.FC<Props> = (props: Props): ReactElement => {
 
     return (
         <div className="book-show">
-            <div>{}</div>
             <img src={`https://picsum.photos/seed/${props.book.id}/300/200`} alt="books"/>
             {content()}
                 <div className="actions">
